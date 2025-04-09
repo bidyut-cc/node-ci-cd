@@ -13,7 +13,7 @@ var DynamicRouteControllerClass = require("../Controllers/DynamicRouteController
 const DynamicRouteController = new DynamicRouteControllerClass();
 const AuthController = new AuthControllerClass();
 router.get("/", (req, res) => {
-    res.json({ message: "API Works from staging" });
+    res.json({ message: "API Works from staging ...." });
 });
 
 router.post(
