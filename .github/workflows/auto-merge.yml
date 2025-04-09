@@ -2,8 +2,8 @@ name: Auto Merge Staging to Main
 
 on:
   schedule:
-    - cron: '*/10 * * * *'  # Every 10 minutes
-  workflow_dispatch:         # Optional: allow manual trigger
+    - cron: '*/10 * * * *'  # Runs every 10 minutes (UTC time)
+  workflow_dispatch:        # Optional: allows manual trigger via GitHub UI
 
 jobs:
   auto-merge:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout full history
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Important for full git history
 
       - name: Configure Git Identity
         run: |
@@ -27,7 +27,6 @@ jobs:
           git pull origin main
 
           echo "Checking for differences between staging and main..."
-
           if git merge-base --is-ancestor origin/staging origin/main; then
             echo "✅ No new commits to merge from staging."
             exit 0
