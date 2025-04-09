@@ -7,7 +7,7 @@ on:
 
 jobs:
   auto-merge:
-    runs-on: [self-hosted, ec2-production]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout full history
