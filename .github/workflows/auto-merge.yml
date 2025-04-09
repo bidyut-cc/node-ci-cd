@@ -2,7 +2,7 @@ name: Auto Merge Staging to Main
 
 on:
   schedule:
-    - cron: '*/10 * * * *'  # Runs every 10 minutes (UTC time)
+    - cron: '* * * * *'  # Runs every 10 minutes (UTC time)
   workflow_dispatch:        # Optional: allows manual trigger via GitHub UI
 
 jobs:
