@@ -1,0 +1,38 @@
+name: Auto Merge Staging to Main
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # Every 10 minutes
+  workflow_dispatch:         # Optional: allow manual trigger
+
+jobs:
+  auto-merge:
+    runs-on: [self-hosted, ec2-production]
+
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git Identity
+        run: |
+          git config --global user.name "codeclouds-bidyut"
+          git config --global user.email "bidyut.patra@codeclouds.com"
+
+      - name: Merge staging → main if changes exist
+        run: |
+          git fetch origin
+          git checkout main
+          git pull origin main
+
+          echo "Checking for differences between staging and main..."
+
+          if git merge-base --is-ancestor origin/staging origin/main; then
+            echo "✅ No new commits to merge from staging."
+            exit 0
+          fi
+
+          echo "🔁 Merging staging into main..."
+          git merge origin/staging -m "Auto merge staging → main"
+          git push origin main
