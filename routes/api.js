@@ -14,6 +14,7 @@ const DynamicRouteController = new DynamicRouteControllerClass();
 const AuthController = new AuthControllerClass();
 router.get("/", (req, res) => {
     res.json({ message: "API Works." });
+
 });
 
 router.post(
