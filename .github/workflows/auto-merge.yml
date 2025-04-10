@@ -24,7 +24,8 @@ jobs:
           git config --global user.name "codeclouds-bidyut"
           git config --global user.email "bidyut.patra@codeclouds.com"
 
-      - name: Merge staging → main if needed
+      - name: Check for differences and merge if needed
+        id: merge
         run: |
           git fetch origin
           git checkout main
@@ -33,18 +34,22 @@ jobs:
           echo "Checking for differences between staging and main..."
           if git merge-base --is-ancestor origin/staging origin/main; then
             echo "✅ No new commits to merge from staging."
+            echo "merged=false" >> $GITHUB_OUTPUT
             exit 0
           fi
 
           echo "🔁 Merging staging into main..."
           git merge origin/staging -m "Auto merge staging → main"
+          echo "merged=true" >> $GITHUB_OUTPUT
 
       - name: Push changes using GITHUB_TOKEN
+        if: steps.merge.outputs.merged == 'true'
         run: |
           echo "🚀 Pushing changes to main..."
           git push origin main
 
       - name: Trigger Deploy to Production
+        if: steps.merge.outputs.merged == 'true'
         run: |
           echo "🚀 Triggering Deploy to Production workflow..."
           curl -X POST \
