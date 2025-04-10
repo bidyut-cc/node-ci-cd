@@ -3,9 +3,10 @@ name: Deploy to Production
 on:
   push:
     branches: [ "main" ]
+  workflow_dispatch:  # 👉 Allows manual trigger from GitHub UI
 
 jobs:
-  deploy-staging:
+  deploy-production:
     runs-on: [self-hosted, ec2-production]
 
     strategy:
