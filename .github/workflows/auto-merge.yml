@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write  # 👈 Give write access to GITHUB_TOKEN
+  actions: write
 
 jobs:
   auto-merge:
