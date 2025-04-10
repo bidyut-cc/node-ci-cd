@@ -21,6 +21,8 @@ jobs:
           git config --global user.email "bidyut.patra@codeclouds.com"
 
       - name: Merge staging → main if changes exist
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           git fetch origin
           git checkout main
@@ -34,4 +36,8 @@ jobs:
 
           echo "🔁 Merging staging into main..."
           git merge origin/staging -m "Auto merge staging → main"
+
+          echo "🔐 Setting up remote with PAT"
+          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}
+
           git push origin main
