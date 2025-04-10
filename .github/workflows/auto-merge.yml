@@ -2,8 +2,8 @@ name: Auto Merge Staging to Main
 
 on:
   schedule:
-    - cron: '* * * * *'  # Runs every 10 minutes (UTC time)
-  workflow_dispatch:        # Optional: allows manual trigger via GitHub UI
+    - cron: '*/10 * * * *'  # Runs every 10 minutes (UTC time)
+  workflow_dispatch:
 
 jobs:
   auto-merge:
@@ -13,16 +13,14 @@ jobs:
       - name: Checkout full history
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Important for full git history
+          fetch-depth: 0
 
       - name: Configure Git Identity
         run: |
           git config --global user.name "codeclouds-bidyut"
           git config --global user.email "bidyut.patra@codeclouds.com"
 
-      - name: Merge staging → main if changes exist
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+      - name: Fetch and Check Differences
         run: |
           git fetch origin
           git checkout main
@@ -37,7 +35,12 @@ jobs:
           echo "🔁 Merging staging into main..."
           git merge origin/staging -m "Auto merge staging → main"
 
+      - name: Push changes to main
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
           echo "🔐 Setting up remote with PAT"
-          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}
+          git remote set-url origin https://${GH_PAT}@github.com/${{ github.repository }}
 
+          echo "🚀 Pushing changes..."
           git push origin main
